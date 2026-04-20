@@ -258,14 +258,6 @@
 									"className": "Folder",
 									"children": [
 										{
-											"name": "BuilderService",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Scripts/ReplicatedStorage/SharedModules/General/BuilderService.lua"
-											]
-										},
-										{
 											"name": "HighlightService",
 											"className": "ModuleScript",
 											"children": [],
@@ -2268,14 +2260,6 @@
 											"children": [],
 											"filePaths": [
 												"Scripts/ServerScriptService/ServerModules/General/CameraService.lua"
-											]
-										},
-										{
-											"name": "EnemyService",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Scripts/ServerScriptService/ServerModules/General/EnemyService.lua"
 											]
 										},
 										{
