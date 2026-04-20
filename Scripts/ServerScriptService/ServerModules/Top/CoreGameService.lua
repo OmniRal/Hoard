@@ -47,16 +47,9 @@ local PlayerValues: {
     [Player]: {
         RespawnTime: number,
         LastDiedLocation: CFrame?,
-        Resources: {Tree: number, Rock: number, Crystal: number}
     }
 } = {}
 local HandlingPlayerLeaving = false
-
-local TeamResourcePool = { -- How many of each resources the whole team has
-    Tree = 10,
-    Rock = 10,
-    Crystal = 10
-}
 
 local Assets = ServerStorage.Assets
 local SharedAssets = ReplicatedStorage.Assets
@@ -135,52 +128,6 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Public API
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-function CoreGameService.CheckHaveEnoughTeamResources(BuildCost: {Tree: number, Rock: number, Crystal: number}): boolean
-    for Resource, Amount in BuildCost do
-        if not TeamResourcePool[Resource] then return false end
-        if TeamResourcePool[Resource] < Amount then return false end
-    end
-
-    return true
-end
-
-function CoreGameService.CheckPlayerHasEnoughResources(Player: Player, BuildCost: {Tree: number, Rock: number, Crystal: number}): boolean
-    if not Player then return false end
-
-    local PValues = PlayerValues[Player]
-    if not PValues then return false end
-    if not PValues.Resources then return false end
-
-    for Resource, Amount in BuildCost do
-        if not PValues.Resources[Resource] then return false end
-        if PValues.Resources[Resource] < Amount then return false end
-    end
-
-    return true
-end
-
--- Add or subtract resources from the team pool
-function CoreGameService.UpdateResourcesCount(By: {Tree: number, Rock: number, Crystal: number})
-    for Resource, Amount in By do
-        if not TeamResourcePool[Resource] then continue end
-        TeamResourcePool[Resource] += Amount
-    end
-end
-
--- Add or subtract resources from the player pool
-function CoreGameService.UpdatePlayerResourcesCount(Player: Player, By: {Tree: number, Rock: number, Crystal: number})
-    if not Player then return end
-
-    local PValues = PlayerValues[Player]
-    if not PValues then return end
-    if not PValues.Resources then return end
-
-    for Resource, Amount in By do
-        if not PValues.Resources[Resource] then continue end
-        PValues.Resources[Resource] += Amount
-    end
-end
 
 -- Handle when the player requests to the server to respawn
 function CoreGameService:RequestSpawning(Player: Player, Delay: number): boolean

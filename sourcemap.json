@@ -113,6 +113,19 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "Objects",
+							"className": "Folder",
+							"filePaths": [],
+							"children": [
+								{
+									"name": "Coin",
+									"className": "MaterialVariant",
+									"filePaths": [],
+									"children": []
+								}
+							]
 						}
 					],
 					"filePaths": [
