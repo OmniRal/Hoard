@@ -36,11 +36,8 @@ local ProfileTemplate = {
     XP = 0,
 }
 
-local ProfileStore = ProfileService.GetProfileStore('OmniBlot_Fortress_Alpha_1', ProfileTemplate)
-
+local ProfileStore = ProfileService.GetProfileStore('OmniBlot_Hoard_Alpha_1', ProfileTemplate)
 local Profiles = {}
-
-local RNG = Random.new()
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------
