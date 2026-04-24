@@ -229,6 +229,21 @@ function Utility:CheckForItems(List: {}, From: CFrame, Range: number)
     return List
 end
 
+-- Takes a folder that has int values and converts them into an option table used for RollPick
+function Utility.ConvertFolderToOptions(Folder: Folder)
+    if not Folder then return end
+
+    local Options: {Choice: string, Chance: number} = {}
+    for _, Val: IntValue in Folder:GetChildren() do
+        if not Val:IsA("IntValue") then continue end
+        if Val.Value <= 0 then continue end
+        table.insert(Options, {Choice = Val.Name, Chance = Val.Value})
+    end
+
+    return Options
+end
+
+-- Randomly picks an option from a table of choices
 function Utility.RollPick(Options: {{Choice: any, Chance: number}}): any?
     if #Options <= 0 then return end
     if #Options == 1 then

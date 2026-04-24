@@ -14,107 +14,6 @@
 					"className": "Folder",
 					"children": [
 						{
-							"name": "Rocks",
-							"className": "Folder",
-							"filePaths": [],
-							"children": [
-								{
-									"name": "Canyon_Rock_1",
-									"className": "MaterialVariant",
-									"filePaths": [],
-									"children": [
-										{
-											"name": "Canyon_Rock_1_roughness",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Canyon_Rock_1_basecolor",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Canyon_Rock_1_normal",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										}
-									]
-								}
-							]
-						},
-						{
-							"name": "Metals",
-							"className": "Folder",
-							"filePaths": [],
-							"children": [
-								{
-									"name": "Metal_1",
-									"className": "MaterialVariant",
-									"filePaths": [],
-									"children": [
-										{
-											"name": "Metal_1_metallic",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_1_normal",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_1_basecolor",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_1_roughness",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										}
-									]
-								},
-								{
-									"name": "Metal_2",
-									"className": "MaterialVariant",
-									"filePaths": [],
-									"children": [
-										{
-											"name": "Metal_2_metallic",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_2_roughness",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_2_basecolor",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Metal_2_normal",
-											"className": "Decal",
-											"filePaths": [],
-											"children": []
-										}
-									]
-								}
-							]
-						},
-						{
 							"name": "Objects",
 							"className": "Folder",
 							"filePaths": [],
@@ -658,6 +557,30 @@
 									"className": "Folder",
 									"children": [
 										{
+											"name": "Option",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Packages/_Index/sleitnick_comm@0.3.0/Option.lua"
+											]
+										},
+										{
+											"name": "Promise",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Packages/_Index/sleitnick_comm@0.3.0/Promise.lua"
+											]
+										},
+										{
+											"name": "Signal",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Packages/_Index/sleitnick_comm@0.3.0/Signal.lua"
+											]
+										},
+										{
 											"name": "comm",
 											"className": "ModuleScript",
 											"children": [
@@ -755,30 +678,6 @@
 											"filePaths": [
 												"Packages/_Index/sleitnick_comm@0.3.0/comm/init.lua"
 											]
-										},
-										{
-											"name": "Option",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Packages/_Index/sleitnick_comm@0.3.0/Option.lua"
-											]
-										},
-										{
-											"name": "Promise",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Packages/_Index/sleitnick_comm@0.3.0/Promise.lua"
-											]
-										},
-										{
-											"name": "Signal",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Packages/_Index/sleitnick_comm@0.3.0/Signal.lua"
-											]
 										}
 									],
 									"filePaths": [
@@ -789,31 +688,6 @@
 									"name": "sleitnick_component@2.4.5",
 									"className": "Folder",
 									"children": [
-										{
-											"name": "component",
-											"className": "ModuleScript",
-											"children": [
-												{
-													"name": "init.spec",
-													"className": "ModuleScript",
-													"children": [],
-													"filePaths": [
-														"Packages/_Index/sleitnick_component@2.4.5/component/init.spec.lua"
-													]
-												},
-												{
-													"name": "wally",
-													"className": "ModuleScript",
-													"children": [],
-													"filePaths": [
-														"Packages/_Index/sleitnick_component@2.4.5/component/wally.toml"
-													]
-												}
-											],
-											"filePaths": [
-												"Packages/_Index/sleitnick_component@2.4.5/component/init.lua"
-											]
-										},
 										{
 											"name": "Promise",
 											"className": "ModuleScript",
@@ -845,6 +719,31 @@
 											"filePaths": [
 												"Packages/_Index/sleitnick_component@2.4.5/Trove.lua"
 											]
+										},
+										{
+											"name": "component",
+											"className": "ModuleScript",
+											"children": [
+												{
+													"name": "init.spec",
+													"className": "ModuleScript",
+													"children": [],
+													"filePaths": [
+														"Packages/_Index/sleitnick_component@2.4.5/component/init.spec.lua"
+													]
+												},
+												{
+													"name": "wally",
+													"className": "ModuleScript",
+													"children": [],
+													"filePaths": [
+														"Packages/_Index/sleitnick_component@2.4.5/component/wally.toml"
+													]
+												}
+											],
+											"filePaths": [
+												"Packages/_Index/sleitnick_component@2.4.5/component/init.lua"
+											]
 										}
 									],
 									"filePaths": [
@@ -861,6 +760,14 @@
 											"children": [],
 											"filePaths": [
 												"Packages/_Index/sleitnick_knit@1.4.7/Comm.lua"
+											]
+										},
+										{
+											"name": "Promise",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Packages/_Index/sleitnick_knit@1.4.7/Promise.lua"
 											]
 										},
 										{
@@ -902,14 +809,6 @@
 											],
 											"filePaths": [
 												"Packages/_Index/sleitnick_knit@1.4.7/knit/init.lua"
-											]
-										},
-										{
-											"name": "Promise",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Packages/_Index/sleitnick_knit@1.4.7/Promise.lua"
 											]
 										}
 									],
@@ -956,6 +855,14 @@
 									"className": "Folder",
 									"children": [
 										{
+											"name": "Trove",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Packages/_Index/sleitnick_shake@0.1.7/Trove.lua"
+											]
+										},
+										{
 											"name": "shake",
 											"className": "ModuleScript",
 											"children": [
@@ -978,14 +885,6 @@
 											],
 											"filePaths": [
 												"Packages/_Index/sleitnick_shake@0.1.7/shake/init.lua"
-											]
-										},
-										{
-											"name": "Trove",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Packages/_Index/sleitnick_shake@0.1.7/Trove.lua"
 											]
 										}
 									],
@@ -2112,54 +2011,6 @@
 							]
 						},
 						{
-							"name": "Towers",
-							"className": "Folder",
-							"children": [
-								{
-									"name": "TestTower",
-									"className": "Model",
-									"children": [
-										{
-											"name": "Base",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Tower",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Top",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Shooter",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Seat",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										}
-									],
-									"filePaths": [
-										"Assets/Replicated/Towers/TestTower.rbxm"
-									]
-								}
-							],
-							"filePaths": [
-								"Assets/Replicated/Towers"
-							]
-						},
-						{
 							"name": "UIs",
 							"className": "Folder",
 							"children": [
@@ -2249,14 +2100,6 @@
 											"filePaths": [
 												"Scripts/ServerScriptService/ServerModules/Classes/Quest.lua"
 											]
-										},
-										{
-											"name": "QuestBoard",
-											"className": "Folder",
-											"children": [],
-											"filePaths": [
-												"Scripts/ServerScriptService/ServerModules/Classes/QuestBoard"
-											]
 										}
 									],
 									"filePaths": [
@@ -2273,6 +2116,14 @@
 											"children": [],
 											"filePaths": [
 												"Scripts/ServerScriptService/ServerModules/General/CameraService.lua"
+											]
+										},
+										{
+											"name": "LootService",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Scripts/ServerScriptService/ServerModules/General/LootService.lua"
 											]
 										},
 										{
@@ -2543,153 +2394,7 @@
 						{
 							"name": "Maps",
 							"className": "Folder",
-							"children": [
-								{
-									"name": "TestMap",
-									"className": "Folder",
-									"children": [
-										{
-											"name": "Trees",
-											"className": "Folder",
-											"filePaths": [],
-											"children": [
-												{
-													"name": "TestTree",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														},
-														{
-															"name": "Leaves_1",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														},
-														{
-															"name": "Leaves_2",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														},
-														{
-															"name": "Leaves_3",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												}
-											]
-										},
-										{
-											"name": "Crystals",
-											"className": "Folder",
-											"filePaths": [],
-											"children": [
-												{
-													"name": "TestCrystal",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														},
-														{
-															"name": "Top",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												}
-											]
-										},
-										{
-											"name": "Rocks",
-											"className": "Folder",
-											"filePaths": [],
-											"children": [
-												{
-													"name": "TestRock",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														},
-														{
-															"name": "Top",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												}
-											]
-										},
-										{
-											"name": "Pickups",
-											"className": "Folder",
-											"filePaths": [],
-											"children": [
-												{
-													"name": "Tree",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												},
-												{
-													"name": "Rock",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												},
-												{
-													"name": "Crystal",
-													"className": "Model",
-													"filePaths": [],
-													"children": [
-														{
-															"name": "Base",
-															"className": "Part",
-															"filePaths": [],
-															"children": []
-														}
-													]
-												}
-											]
-										}
-									],
-									"filePaths": [
-										"Assets/Server/Maps/TestMap.rbxm"
-									]
-								}
-							],
+							"children": [],
 							"filePaths": [
 								"Assets/Server/Maps"
 							]
@@ -2769,51 +2474,50 @@
 							]
 						},
 						{
-							"name": "Towers",
+							"name": "Loot",
 							"className": "Folder",
 							"children": [
 								{
-									"name": "TestTower_Build",
-									"className": "Model",
+									"name": "Coins",
+									"className": "Folder",
 									"children": [
 										{
-											"name": "Base",
-											"className": "Part",
+											"name": "Coin",
+											"className": "Model",
 											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Tower",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Top",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Shooter",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
-										},
-										{
-											"name": "Seat",
-											"className": "Part",
-											"filePaths": [],
-											"children": []
+											"children": [
+												{
+													"name": "Base",
+													"className": "Part",
+													"filePaths": [],
+													"children": []
+												}
+											]
 										}
 									],
 									"filePaths": [
-										"Assets/Server/Towers/TestTower_Build.rbxm"
+										"Assets/Server/Loot/Coins.rbxm"
+									]
+								},
+								{
+									"name": "Gems",
+									"className": "Folder",
+									"children": [],
+									"filePaths": [
+										"Assets/Server/Loot/Gems.rbxm"
+									]
+								},
+								{
+									"name": "Treasure",
+									"className": "Folder",
+									"children": [],
+									"filePaths": [
+										"Assets/Server/Loot/Treasure.rbxm"
 									]
 								}
 							],
 							"filePaths": [
-								"Assets/Server/Towers"
+								"Assets/Server/Loot"
 							]
 						}
 					],
@@ -2936,14 +2640,6 @@
 									],
 									"filePaths": [
 										"Scripts/StarterPlayerScripts/Other"
-									]
-								},
-								{
-									"name": "UIModules",
-									"className": "Folder",
-									"children": [],
-									"filePaths": [
-										"Scripts/StarterPlayerScripts/UIModules"
 									]
 								}
 							],

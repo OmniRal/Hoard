@@ -29,13 +29,14 @@ local ProfileTemplate = {
 
     Stats = {
         TimePlayed = {Seconds = 0, Minutes = 0, Hours = 0, Days = 0},
+        Loot = 0,
     },
 
     Level = 1,
     XP = 0,
 }
 
-local ProfileStore = ProfileService.GetProfileStore('OmniBlot_Hoard_Alpha_2', ProfileTemplate)
+local ProfileStore = ProfileService.GetProfileStore('OmniBlot_Hoard_Alpha_3', ProfileTemplate)
 local Profiles = {}
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
