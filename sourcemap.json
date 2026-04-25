@@ -2392,6 +2392,53 @@
 							]
 						},
 						{
+							"name": "Loot",
+							"className": "Folder",
+							"children": [
+								{
+									"name": "Coins",
+									"className": "Folder",
+									"children": [
+										{
+											"name": "Coin",
+											"className": "Model",
+											"filePaths": [],
+											"children": [
+												{
+													"name": "Base",
+													"className": "Part",
+													"filePaths": [],
+													"children": []
+												}
+											]
+										}
+									],
+									"filePaths": [
+										"Assets/Server/Loot/Coins.rbxm"
+									]
+								},
+								{
+									"name": "Gems",
+									"className": "Folder",
+									"children": [],
+									"filePaths": [
+										"Assets/Server/Loot/Gems.rbxm"
+									]
+								},
+								{
+									"name": "Treasure",
+									"className": "Folder",
+									"children": [],
+									"filePaths": [
+										"Assets/Server/Loot/Treasure.rbxm"
+									]
+								}
+							],
+							"filePaths": [
+								"Assets/Server/Loot"
+							]
+						},
+						{
 							"name": "Maps",
 							"className": "Folder",
 							"children": [],
@@ -2471,53 +2518,6 @@
 							],
 							"filePaths": [
 								"Assets/Server/Misc"
-							]
-						},
-						{
-							"name": "Loot",
-							"className": "Folder",
-							"children": [
-								{
-									"name": "Coins",
-									"className": "Folder",
-									"children": [
-										{
-											"name": "Coin",
-											"className": "Model",
-											"filePaths": [],
-											"children": [
-												{
-													"name": "Base",
-													"className": "Part",
-													"filePaths": [],
-													"children": []
-												}
-											]
-										}
-									],
-									"filePaths": [
-										"Assets/Server/Loot/Coins.rbxm"
-									]
-								},
-								{
-									"name": "Gems",
-									"className": "Folder",
-									"children": [],
-									"filePaths": [
-										"Assets/Server/Loot/Gems.rbxm"
-									]
-								},
-								{
-									"name": "Treasure",
-									"className": "Folder",
-									"children": [],
-									"filePaths": [
-										"Assets/Server/Loot/Treasure.rbxm"
-									]
-								}
-							],
-							"filePaths": [
-								"Assets/Server/Loot"
 							]
 						}
 					],

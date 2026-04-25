@@ -53,13 +53,15 @@ local function AddWallsAroundBox(Box: BasePart): {BasePart}
     
     for Side = -1, 1, 2 do
         local Wall = New.Instance("Part", Box.Parent, "Wall", 
-        {Anchored = true, Material = Enum.Material.SmoothPlastic, Size = Vector3.new(Box.Size.X, Box.Size.Y, 1), CFrame = Box.CFrame * CFrame.new(0, 0, (Box.Size.Z / 2 + 0.5) * Side )})
+        {Anchored = true, Material = Enum.Material.SmoothPlastic, Transparency = 1, Size = Vector3.new(Box.Size.X, Box.Size.Y, 1), CFrame = Box.CFrame * CFrame.new(0, 0, (Box.Size.Z / 2 + 0.5) * Side )})
+        Wall.CollisionGroup = "LootWalls"
         table.insert(Walls, Wall)
     end
 
     for Side = -1, 1, 2 do
         local Wall = New.Instance("Part", Box.Parent, "Wall", 
-        {Anchored = true, Material = Enum.Material.SmoothPlastic, Size = Vector3.new(1, Box.Size.Y, Box.Size.Z), CFrame = Box.CFrame * CFrame.new((Box.Size.X / 2 + 0.5) * Side , 0, 0)})
+        {Anchored = true, Material = Enum.Material.SmoothPlastic, Transparency = 1, Size = Vector3.new(1, Box.Size.Y, Box.Size.Z), CFrame = Box.CFrame * CFrame.new((Box.Size.X / 2 + 0.5) * Side , 0, 0)})
+        Wall.CollisionGroup = "LootWalls"
         table.insert(Walls, Wall)
     end
 
@@ -95,6 +97,7 @@ function LootService.SpawnLoot(Container: Model)
         if not NewLoot.PrimaryPart then return end
 
         NewLoot.PrimaryPart.Anchored = false
+        NewLoot.PrimaryPart.CollisionGroup = "Loot"
         NewLoot:PivotTo(
             Box.CFrame * CFrame.new(RNG:NextNumber(-Box.Size.X / 3, Box.Size.X / 3), Box.Size.Y / 2, RNG:NextNumber(-Box.Size.Z / 3, Box.Size.Z / 3))
             * CFrame.Angles(RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2))
@@ -106,7 +109,7 @@ function LootService.SpawnLoot(Container: Model)
     if #TempWalls > 0 then
         for _, Wall in TempWalls do
             if not Wall then continue end
-            Wall:Destroy()
+            --Wall:Destroy()
         end
     end
 

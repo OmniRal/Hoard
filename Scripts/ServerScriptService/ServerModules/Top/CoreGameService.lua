@@ -14,6 +14,8 @@ local PhysicsService = game:GetService("PhysicsService")
 local Workspace = game:GetService("Workspace")
 local Debris = game:GetService("Debris")
 
+local PhysicsService = game:GetService("PhysicsService")
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Modules
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,9 +109,15 @@ end
 local function SetupCollisions()
     PhysicsService:RegisterCollisionGroup("Players")
     PhysicsService:RegisterCollisionGroup("NoClip")
+    PhysicsService:RegisterCollisionGroup("Loot")
+    PhysicsService:RegisterCollisionGroup("LootWalls")
     PhysicsService:CollisionGroupSetCollidable("Default", "Players", true)
     PhysicsService:CollisionGroupSetCollidable("Players", "Players", false)
     PhysicsService:CollisionGroupSetCollidable("Default", "NoClip", false)
+    
+    PhysicsService:CollisionGroupSetCollidable("Players", "Loot", false)
+    PhysicsService:CollisionGroupSetCollidable("Players", "LootWalls", false)
+    PhysicsService:CollisionGroupSetCollidable("Loot", "LootWalls", true)
 end
 
 local function ToggleParticles(Player: Player, Parts: {BasePart}, Particles: {{Name: string, Set: boolean}})
