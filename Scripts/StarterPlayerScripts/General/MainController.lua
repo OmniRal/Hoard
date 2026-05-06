@@ -2,6 +2,10 @@
 
 local MainController = {}
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Services
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 local UserGameSettings = UserSettings().GameSettings
 
 local Players = game:GetService("Players")
@@ -11,14 +15,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
-local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Modules
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local DataService = Remotes.DataService
-local RelicService = Remotes.RelicService
-local ItemService = Remotes.ItemService
-local RagdollService = Remotes.RagdollService
+local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
 
 local CameraController = require(StarterPlayer.StarterPlayerScripts.Source.General.CameraController)
 local MainUIController = require(StarterPlayer.StarterPlayerScripts.Source.General.MainUIController)
@@ -26,11 +27,23 @@ local MainUIController = require(StarterPlayer.StarterPlayerScripts.Source.Gener
 local CustomEnum = require(ReplicatedStorage.Source.SharedModules.Info.CustomEnum)
 local PlayerInfo = require(StarterPlayer.StarterPlayerScripts.Source.Other.PlayerInfo)
 
+local DataService = Remotes.DataService
+local RelicService = Remotes.RelicService
+local ItemService = Remotes.ItemService
+local RagdollService = Remotes.RagdollService
+
 local ControlModule
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Constants
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Remotes
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Variables
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local LocalPlayer = Players.LocalPlayer
@@ -38,8 +51,6 @@ local Mouse = LocalPlayer:GetMouse()
 local Camera = Workspace.CurrentCamera
 
 local CharacterSetup = false
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local AnimationsList : {[string]: {ID: number, Priority: Enum.AnimationPriority}} = {
 	["_"] = {ID = 0, Priority = Enum.AnimationPriority.Action},
@@ -53,13 +64,11 @@ GroundParams.IgnoreWater = true
 local PickupDebounce = false
 
 local Assets = ReplicatedStorage.Assets
-
 local RNG = Random.new()
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
------------------
--- Private API --
------------------
+-- Private Functions
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- Check if the player is touching the ground
 local function CheckGrounded()
@@ -119,33 +128,9 @@ local function UpdateWalkSpeed()
     PlayerInfo.Human.WalkSpeed = TotalWalkSpeed
 end
 
-local function CheckPickupItems()
-    if PickupDebounce then return end
-
-    local Target = Mouse.Target
-    if not Target then return end
-
-    -- Try to pick up a relic
-    if Target.Parent:HasTag("Relic") then
-        PickupDebounce = true
-        RelicService:RequestPickupRelic(Target.Parent)
-
-    elseif Target.Parent:HasTag("Item") then
-        PickupDebounce = true
-        ItemService:RequestPickupItem(Target.Parent)
-    end 
-
-    if not PickupDebounce then return end
-
-    task.delay(1, function()
-        PickupDebounce = false
-    end)
-end
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-----------------
--- Public API --
-----------------
+-- Public API
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function MainController:SetCharacter()
     print("Main - Setting character started.")
@@ -231,7 +216,7 @@ function MainController:Init()
 
     UserInputService.InputBegan:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-            CheckPickupItems()
+            --CheckPickupItems()
         end
 
         if Input.KeyCode == Enum.KeyCode.K then

@@ -188,9 +188,34 @@
 										{
 											"name": "Utility",
 											"className": "ModuleScript",
-											"children": [],
+											"children": [
+												{
+													"name": "Units",
+													"className": "ModuleScript",
+													"children": [],
+													"filePaths": [
+														"Scripts/ReplicatedStorage/SharedModules/General/Utility/Units.lua"
+													]
+												},
+												{
+													"name": "Players",
+													"className": "ModuleScript",
+													"children": [],
+													"filePaths": [
+														"Scripts/ReplicatedStorage/SharedModules/General/Utility/Players.lua"
+													]
+												},
+												{
+													"name": "Roll",
+													"className": "ModuleScript",
+													"children": [],
+													"filePaths": [
+														"Scripts/ReplicatedStorage/SharedModules/General/Utility/Roll.lua"
+													]
+												}
+											],
 											"filePaths": [
-												"Scripts/ReplicatedStorage/SharedModules/General/Utility.lua"
+												"Scripts/ReplicatedStorage/SharedModules/General/Utility/Utility.init.lua"
 											]
 										}
 									],
@@ -2135,6 +2160,14 @@
 											]
 										},
 										{
+											"name": "QueueService",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Scripts/ServerScriptService/ServerModules/General/QueueService.lua"
+											]
+										},
+										{
 											"name": "RagdollService",
 											"className": "ModuleScript",
 											"children": [],
@@ -2610,6 +2643,14 @@
 											"children": [],
 											"filePaths": [
 												"Scripts/StarterPlayerScripts/General/MainUIController.lua"
+											]
+										},
+										{
+											"name": "LootController",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Scripts/StarterPlayerScripts/General/LootController.lua"
 											]
 										}
 									],
