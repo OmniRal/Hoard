@@ -18,19 +18,24 @@ local RunService = game:GetService("RunService")
 
 local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
 
-local VisualService = Remotes.VisualService
 
 local CustomEnum = require(ReplicatedStorage.Source.SharedModules.Info.CustomEnum)
-
 local WorldUIService = require(ReplicatedStorage.Source.SharedModules.UI.WorldUIService)
-
 local DeviceController = require(StarterPlayer.StarterPlayerScripts.Source.General.DeviceController)
+
+local LootUI = require(script.LootUI)
 
 --local GeneralUILibrary = require(ReplicatedStorage.Source.SharedModules.UI.GeneralUILibrary)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Constants
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Remotes
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local VisualService = Remotes.VisualService
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Variables
@@ -40,7 +45,7 @@ MainUIController.Menu = "None"
 
 local LocalPlayer = Players.LocalPlayer
 
-local Gui
+local Gui: ScreenGui
 
 local DraggingUI: {Base: GuiObject?, Element: GuiObject?, Dragging: boolean, DragStart: Vector3?, PositionElement: UDim2?} = {
     Base = nil,
@@ -56,6 +61,23 @@ local Assets = ReplicatedStorage.Assets
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Private Functions
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local function CreateNewGui()
+    Gui = Assets.UIs.MainGui:Clone()
+    Gui.Parent = LocalPlayer.PlayerGui
+
+    task.spawn(function()
+        for x = 1, 10 do
+            task.wait(0.1)
+            for _, OldGui in LocalPlayer.PlayerGui:GetChildren() do
+                if not OldGui then continue end
+                if OldGui.Name == "MainGui" and OldGui ~= Gui then
+                    OldGui:Destroy()
+                end
+            end
+        end
+    end)
+end
 
 local function UpdateDrag(Input: InputObject)
     if not DraggingUI.Base or not DraggingUI.Element or not DraggingUI.DragStart or not DraggingUI.PositionElement then return end
@@ -89,22 +111,21 @@ function MainUIController.RunHeartbeat(DeltaTime: number)
 end
 
 function MainUIController:Init()
-    Gui = Assets.UIs.MainGui:Clone()
-    Gui.Parent = LocalPlayer.PlayerGui
+    CreateNewGui()
 
     UserInputService.InputChanged:Connect(function(Input: InputObject)
         if not DraggingUI.Dragging then return end
         if Input.UserInputType ~= Enum.UserInputType.MouseMovement and Input.UserInputType ~= Enum.UserInputType.Touch then return end
         UpdateDrag(Input)
     end)
-
-    print("Main UI Controller Init...")
 end
 
 function MainUIController:Deferred()
-    print("Main UI Controller Deferred...")
-
     SetGui()
+
+    task.delay(0.1, function()
+        LootUI.Init()
+    end)
 
     DeviceController.CurrentDevice:Connect(function()
         print("Main UI Controller Device ", DeviceController.CurrentDevice:Get())

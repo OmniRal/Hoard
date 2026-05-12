@@ -19,11 +19,16 @@ local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
 local New = require(ReplicatedStorage.Source.Pronghorn.New)
 
 local QueueService = require(ServerScriptService.Source.ServerModules.General.QueueService)
+
+local LootInfo = require(ReplicatedStorage.Source.SharedModules.Info.LootInfo)
+
 local Utility = require(ReplicatedStorage.Source.SharedModules.General.Utility)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Constants
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local PICK_UP_RANGE = 7
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Remotes
@@ -33,6 +38,21 @@ local Utility = require(ReplicatedStorage.Source.SharedModules.General.Utility)
 -- Variables
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+local PlayerLoot: {
+    [Player]: {
+        Value: number, 
+        Loot: {string}
+    }
+} = {}
+
+local AllContainers: {
+    [Model]: {Collected: boolean, List: {Model}},
+} = {}
+
+local LootFolder: Folder
+local DroppedLootFolder: Folder
+local TempWallsFolder: Folder
+
 local Assets = ServerStorage.Assets
 local LootAssets = Assets.Loot
 
@@ -41,9 +61,6 @@ local LootAvailable = {
     ["Gems"] = LootAssets.Gems:GetChildren(),
     ["Coins"] = LootAssets.Coins:GetChildren(),
 }
-
-local LootFolder: Folder
-local TempWallsFolder: Folder
 
 local RNG = Random.new()
 
@@ -116,6 +133,23 @@ local function WaitToAnchor(List: {Model}, TempWalls: {Part}?)
     end)
 end
 
+local function CalculatePlayerLootValue(Player: Player): number
+    if not Player then return 0 end
+    if not PlayerLoot[Player] then return 0 end
+    if not PlayerLoot[Player].Loot then return 0 end
+
+    local TotalValue = 0
+    for _, Name in PlayerLoot[Player].Loot do
+        local Value = LootInfo[Name] or 0
+        TotalValue += Value
+    end
+
+    PlayerLoot[Player].Value = TotalValue
+    Remotes.LootService.PlayerLootValueChanged:Fire(Player, TotalValue)
+
+    return PlayerLoot[Player].Value
+end
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Public API
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,22 +194,64 @@ function LootService.SpawnLoot(Container: Model)
         task.wait()
     end
 
-    WaitToAnchor(SpawnedLoot, TempWalls)
+    AllContainers[Container] = {Collected = false, List = SpawnedLoot}
+    WaitToAnchor(table.clone(SpawnedLoot), TempWalls)
 
     Box:Destroy()
 end
 
+function LootService.RequestPickupLoot(Player: Player, Loot: Model): boolean
+    if not Player or not Loot then return false end
+    local Alive, _, Root = Utility.Players.CheckAlive(Player)
+    if not Alive or not Root or not Loot.PrimaryPart then return false end
+    local Distance = (Root.Position - Loot.PrimaryPart.Position).Magnitude
+    if Distance > PICK_UP_RANGE then return false end
+
+    if not PlayerLoot[Player] then
+        PlayerLoot[Player] = {Value = 0, Loot = {}}
+    end
+
+    if Loot:HasTag("LootContainer") then
+        if not AllContainers[Loot] then return false end
+        if AllContainers[Loot].Collected then return false end
+
+        AllContainers[Loot].Collected = true
+        
+        for _, Piece in AllContainers[Loot].List do
+            if not Piece then continue end
+            table.insert(PlayerLoot[Player].Loot, Piece.Name)
+            Piece:Destroy()
+        end
+
+    else
+        table.insert(PlayerLoot[Player].Loot, Loot.Name)
+        Loot:Destroy()
+    end
+
+    CalculatePlayerLootValue(Player)
+
+    return true
+end
+
 function LootService:Init()
     LootFolder = New.Instance("Folder", "Loot", Workspace)
+    DroppedLootFolder = New.Instance("Folder", "DroppedLoot", Workspace)
     TempWallsFolder = New.Instance("Folder", "TempWalls", Workspace)
 
-    Remotes:CreateToServer("RequestPickupLoot", {"Model"}, "Reliable", function(Player: Player, Loot: Model)
-    
+    Remotes:CreateToClient("PlayerLootValueChanged", {"number"})
+
+    Remotes:CreateToServer("RequestPickupLoot", {"Model"}, "Returns", function(Player: Player, Loot: Model)
+        return LootService.RequestPickupLoot(Player, Loot)
     end)
 end
 
 function LootService:Deferred()
     LootService.SpawnLoot(Workspace.TestMap.Pile)
+end
+
+function LootService.PlayerAdded(Player: Player)
+    if PlayerLoot[Player] then return end
+    PlayerLoot[Player] = {Value = 0, Loot = {}}
 end
 
 return LootService

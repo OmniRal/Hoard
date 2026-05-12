@@ -1,112 +1,48 @@
 -- OmniRal
 
-local LootController = {}
+local LootUI = {}
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Services
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local StarterPlayer = game:GetService("StarterPlayer")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CollectionService = game:GetService("CollectionService")
-local Workspace = game:GetService("Workspace")
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Modules
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
-local LootUI = require(StarterPlayer.StarterPlayerScripts.Source.General.MainUIController.LootUI)
-local Utility = require(ReplicatedStorage.Source.SharedModules.General.Utility)
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Constants
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local SEARCH_LOOT_RATE = 0.1
-local PICK_UP_RANGE = 7
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Remotes
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-local LootService = Remotes.LootService
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Variables
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local LocalPlayer = Players.LocalPlayer
-
-local RunHeartbeat: RBXScriptConnection? = nil
-local LastSearchLootCheck = os.clock()
+local Gui: ScreenGui
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Private Functions
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local function SearchForLootToPickup(Root: BasePart)
-    if not Root then return end
-
-    local Containers = CollectionService:GetTagged("LootContainer")
-
-    -- 1st check loot containers
-    for _, Container : Model in Containers do
-        if not Container then continue end
-        if not Container.PrimaryPart then continue end
-        local Distance = (Root.Position - Container.PrimaryPart.Position).Magnitude
-        if Distance > PICK_UP_RANGE then continue end
-
-        local Success = LootService:RequestPickupLoot(Container)
-        if Success then
-            -- Maybe something happens here?
-        end
-
-        warn("Success: ", Success)
-
-        return
-    end
-
-    -- 2nd, check individual pieces
-
-    -- 3rd, check dropped loot
-end
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Public API
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function LootController.Stop()
-    if not RunHeartbeat then return end
-    
-    RunHeartbeat:Disconnect()
-    RunHeartbeat = nil
+function LootUI.UpdateLootCount(NewValue: number)
+    local LootCount = Gui:FindFirstChild("LootCount") :: TextLabel
+    if not LootCount then return end
+    LootCount.Text = NewValue
 end
 
-function LootController.Run()
-   LootController.Stop()
-
-   RunHeartbeat = RunService.Heartbeat:Connect(function(DeltaTime: number) 
-       if os.clock() < LastSearchLootCheck + SEARCH_LOOT_RATE then return end
-       local Alive, _, Root = Utility.Players.CheckAlive(LocalPlayer)
-       if not Alive or not Root then return end
-       
-       LastSearchLootCheck = os.clock()
-       SearchForLootToPickup(Root) 
-   end)
+function LootUI.Init()
+    Gui = LocalPlayer.PlayerGui:WaitForChild("MainGui")
 end
 
-function LootController:Init()
-end
-
-function LootController:Deferred()
-    LootController.Run()
-
-    LootService.PlayerLootValueChanged:Connect(function(NewValue: number)
-        LootUI.UpdateLootCount(NewValue)
-    end)
-end
-
-return LootController
+return LootUI
