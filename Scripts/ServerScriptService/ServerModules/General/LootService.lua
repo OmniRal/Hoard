@@ -29,6 +29,7 @@ local Utility = require(ReplicatedStorage.Source.SharedModules.General.Utility)
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local PICK_UP_RANGE = 7
+local DESPAWN_DROP_LOOT_TIME = 5
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Remotes
@@ -38,15 +39,20 @@ local PICK_UP_RANGE = 7
 -- Variables
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+local RunThread: thread?
+
 local PlayerLoot: {
     [Player]: {
         Value: number, 
-        Loot: {string}
+        Loot: {{Name: string, Type: string}}
     }
 } = {}
 
 local AllContainers: {
     [Model]: {Collected: boolean, List: {Model}},
+} = {}
+local AllLoot: {
+    [Model]: {Collected: boolean, HasTimer: boolean, Timer: number},
 } = {}
 
 local LootFolder: Folder
@@ -115,7 +121,15 @@ local function WaitToAnchor(List: {Model}, TempWalls: {Part}?)
                     continue
                 end
                 if Prim.Anchored then continue end
-                if Prim.AssemblyLinearVelocity.Magnitude > 0.1 or Prim.AssemblyAngularVelocity.Magnitude > 0.1 then continue end
+
+                local IsStable = true
+                for x = 1, 10 do
+                    task.wait()
+                    if Prim.AssemblyLinearVelocity.Magnitude <= 0.1 and Prim.AssemblyAngularVelocity.Magnitude <= 0.1 then continue end
+                    IsStable = false
+                end
+
+                if not IsStable then continue end
                 Prim.Anchored = true
                 table.remove(List, x)
             end
@@ -133,27 +147,81 @@ local function WaitToAnchor(List: {Model}, TempWalls: {Part}?)
     end)
 end
 
+-- Tally all the pieces of loot the player has and add it up
 local function CalculatePlayerLootValue(Player: Player): number
     if not Player then return 0 end
-    if not PlayerLoot[Player] then return 0 end
-    if not PlayerLoot[Player].Loot then return 0 end
+    local PLData = PlayerLoot[Player]
+    if not PLData then return 0 end
+    if not PLData.Loot then return 0 end
 
     local TotalValue = 0
-    for _, Name in PlayerLoot[Player].Loot do
-        local Value = LootInfo[Name] or 0
+    for _, Data in PLData.Loot do
+        if not Data.Name or not Data.Type then continue end
+        local Value = LootInfo[Data.Name] or 0
         TotalValue += Value
     end
 
-    PlayerLoot[Player].Value = TotalValue
-    Remotes.LootService.PlayerLootValueChanged:Fire(Player, TotalValue)
+    PLData.Value = TotalValue
+    Remotes.LootService.PlayerLootValueChanged:Fire(Player, TotalValue) -- Send the signal to the player
 
-    return PlayerLoot[Player].Value
+    return PLData.Value
+end
+
+-- Creates an attribute that when set to true, the loot will start flashing before being deleted
+local function AddStartCleanAttribute(Loot: Model)
+    if not Loot then return end
+
+    local PartData: {[BasePart]: number} = {}
+    local Started = false
+
+    Loot:SetAttribute("StartClean", false)
+    
+    for _, Part in Loot:GetDescendants() do
+        if not Part then continue end
+        if not Part:isA("BasePart") then continue end
+        PartData[Part] = Part.Transparency 
+    end
+
+    Loot:GetAttributeChangedSignal("StartClean"):Connect(function() 
+        if Started then return end
+        Started = true
+
+        local Ghost = false
+        for x = 1, 10 do
+            Ghost = not Ghost
+            for Part, OriginalTransparency in PartData do
+                if not Part or not OriginalTransparency then continue end
+                Part.Transparency = if not Ghost then OriginalTransparency else OriginalTransparency + ((1 - OriginalTransparency) / 2)
+            end
+            task.wait(math.clamp(0.5 - ((x - 1) * 0.05), 0.1, 0.5))
+            warn(x)
+        end
+
+        if not AllLoot[Loot] then return end
+        AllLoot[Loot].Collected = true
+        AllLoot[Loot] = nil
+        Loot:Destroy()
+    end)
+end
+
+local function TryToCleanLoot()
+    for Model, Data in AllLoot do
+        if not Model or not Data then continue end
+        if not Data.HasTimer or Model:GetAttribute("StartClean") then continue end
+        
+        Data.Timer -= 1
+
+        if Data.Timer > 0 then continue end
+        
+        Model:SetAttribute("StartClean", true)
+    end
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Public API
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+-- @Container = Which container to spawn loot in
 function LootService.SpawnLoot(Container: Model)
     if not Container then return end
     local LootTypes, Specific, Box = Container:FindFirstChild("LootTypes"), Container:FindFirstChild("Specific"), Container:FindFirstChild("Box")
@@ -187,6 +255,7 @@ function LootService.SpawnLoot(Container: Model)
             Box.CFrame * CFrame.new(RNG:NextNumber(-Box.Size.X / 3, Box.Size.X / 3), Box.Size.Y / 2, RNG:NextNumber(-Box.Size.Z / 3, Box.Size.Z / 3))
             * CFrame.Angles(RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2))
         )
+        NewLoot:SetAttribute("LootType", LootChosen)
         NewLoot.Parent = LootFolder
 
         table.insert(SpawnedLoot, NewLoot)
@@ -195,11 +264,12 @@ function LootService.SpawnLoot(Container: Model)
     end
 
     AllContainers[Container] = {Collected = false, List = SpawnedLoot}
-    WaitToAnchor(table.clone(SpawnedLoot), TempWalls)
+    WaitToAnchor(table.clone(SpawnedLoot), TempWalls) -- Anchor all the loot pieces
 
     Box:Destroy()
 end
 
+-- A player trying to pick up a piece of loot
 function LootService.RequestPickupLoot(Player: Player, Loot: Model): boolean
     if not Player or not Loot then return false end
     local Alive, _, Root = Utility.Players.CheckAlive(Player)
@@ -207,30 +277,98 @@ function LootService.RequestPickupLoot(Player: Player, Loot: Model): boolean
     local Distance = (Root.Position - Loot.PrimaryPart.Position).Magnitude
     if Distance > PICK_UP_RANGE then return false end
 
+    -- Make sure player data exists
     if not PlayerLoot[Player] then
         PlayerLoot[Player] = {Value = 0, Loot = {}}
     end
 
+    local PLData = PlayerLoot[Player]
+
     if Loot:HasTag("LootContainer") then
+        -- If the loot is a container, pick up all the pieces from it
         if not AllContainers[Loot] then return false end
         if AllContainers[Loot].Collected then return false end
 
         AllContainers[Loot].Collected = true
+        Loot:SetAttribute("Collected", true)
         
         for _, Piece in AllContainers[Loot].List do
             if not Piece then continue end
-            table.insert(PlayerLoot[Player].Loot, Piece.Name)
+            table.insert(PLData.Loot, {Name = Piece.Name, Type = Piece:GetAttribute("LootType")})
             Piece:Destroy()
         end
 
     else
-        table.insert(PlayerLoot[Player].Loot, Loot.Name)
+        -- Pick up an individual piece
+        if not AllLoot[Loot] then return false end
+        if AllLoot[Loot].Collected then return false end
+        
+        AllLoot[Loot].Collected = true -- Is collected
+        Loot:SetAttribute("Collected", true)
+
+        table.insert(PLData.Loot, {Name = Loot.Name, Type = Loot:GetAttribute("LootType")})
+        AllLoot[Loot] = nil
         Loot:Destroy()
     end
 
     CalculatePlayerLootValue(Player)
 
     return true
+end
+
+function LootService.RequesteDropLoot(Player: Player)
+    if not Player then return end
+    
+    local Alive, _, Root = Utility.Players.CheckAlive(Player)
+    if not Alive or not Root then return end
+
+    local PLData = PlayerLoot[Player]
+    if not PLData then return end
+    if not PLData.Loot then return end
+
+    local LastLoot = PLData.Loot[#PLData.Loot]
+    if not LastLoot then return end
+
+    local LootTypeFolder = LootAssets[LastLoot.Type]
+    if not LootTypeFolder then return end
+
+    if not LootTypeFolder:FindFirstChild(LastLoot.Name) then return end
+
+    local NewLoot: Model = LootTypeFolder[LastLoot.Name]:Clone()
+    if not NewLoot.PrimaryPart then return end
+
+    NewLoot.PrimaryPart.Anchored = false
+    NewLoot.PrimaryPart.CollisionGroup = "Loot"
+    NewLoot:PivotTo(Root.CFrame * CFrame.new(0, 10, -10) * CFrame.Angles(RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2), RNG:NextNumber(-2, 2)))
+    NewLoot:SetAttribute("LootType", LastLoot.Type)
+    NewLoot.Parent = DroppedLootFolder
+
+    WaitToAnchor({NewLoot})
+
+    PLData.Value -= LootInfo[LastLoot.Name]
+    Remotes.LootService.PlayerLootValueChanged:Fire(Player, PlayerLoot[Player].Value)
+
+    table.remove(PLData.Loot, #PLData.Loot)
+    AllLoot[NewLoot] = {Collected = false, HasTimer = true, Timer = DESPAWN_DROP_LOOT_TIME}
+
+    AddStartCleanAttribute(NewLoot)
+end
+
+function LootService.Stop()
+    if not RunThread then return end
+    task.cancel(RunThread)
+    RunThread = nil
+end
+
+function LootService.Run()
+    LootService.Stop()
+
+    RunThread = task.spawn(function()
+        while true do
+            task.wait(1)
+            TryToCleanLoot()
+        end
+    end)
 end
 
 function LootService:Init()
@@ -243,10 +381,16 @@ function LootService:Init()
     Remotes:CreateToServer("RequestPickupLoot", {"Model"}, "Returns", function(Player: Player, Loot: Model)
         return LootService.RequestPickupLoot(Player, Loot)
     end)
+
+    Remotes:CreateToServer("RequesteDropLoot", {}, "Returns", function(Player: Player)
+        return LootService.RequesteDropLoot(Player)
+    end)
 end
 
 function LootService:Deferred()
     LootService.SpawnLoot(Workspace.TestMap.Pile)
+
+    LootService.Run()
 end
 
 function LootService.PlayerAdded(Player: Player)

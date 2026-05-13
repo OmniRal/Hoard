@@ -277,6 +277,14 @@
 											]
 										},
 										{
+											"name": "LootInfo",
+											"className": "ModuleScript",
+											"children": [],
+											"filePaths": [
+												"Scripts/ReplicatedStorage/SharedModules/Info/LootInfo.lua"
+											]
+										},
+										{
 											"name": "MapInfo",
 											"className": "ModuleScript",
 											"children": [],
@@ -306,14 +314,6 @@
 											"children": [],
 											"filePaths": [
 												"Scripts/ReplicatedStorage/SharedModules/Info/ShopInfo.lua"
-											]
-										},
-										{
-											"name": "LootInfo",
-											"className": "ModuleScript",
-											"children": [],
-											"filePaths": [
-												"Scripts/ReplicatedStorage/SharedModules/Info/LootInfo.lua"
 											]
 										}
 									],

@@ -23,14 +23,10 @@ local Remotes = require(ReplicatedStorage.Source.Pronghorn.Remotes)
 
 local CameraController = require(StarterPlayer.StarterPlayerScripts.Source.General.CameraController)
 local MainUIController = require(StarterPlayer.StarterPlayerScripts.Source.General.MainUIController)
+local LootController = require(StarterPlayer.StarterPlayerScripts.Source.General.LootController)
 
 local CustomEnum = require(ReplicatedStorage.Source.SharedModules.Info.CustomEnum)
 local PlayerInfo = require(StarterPlayer.StarterPlayerScripts.Source.Other.PlayerInfo)
-
-local DataService = Remotes.DataService
-local RelicService = Remotes.RelicService
-local ItemService = Remotes.ItemService
-local RagdollService = Remotes.RagdollService
 
 local ControlModule
 
@@ -41,6 +37,9 @@ local ControlModule
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Remotes
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local DataService = Remotes.DataService
+local RagdollService = Remotes.RagdollService
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Variables
@@ -248,6 +247,8 @@ function MainController:Deferred()
         PlayerInfo.Data = Data
         print("Recieved Data: ", PlayerInfo.Data)
     end)
+
+    LootController.ToggleControls(true)
 end
 
 return MainController

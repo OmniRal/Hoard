@@ -67,8 +67,8 @@ local function CreateNewGui()
     Gui.Parent = LocalPlayer.PlayerGui
 
     task.spawn(function()
-        for x = 1, 10 do
-            task.wait(0.1)
+        for x = 1, 20 do
+            task.wait(0.2)
             for _, OldGui in LocalPlayer.PlayerGui:GetChildren() do
                 if not OldGui then continue end
                 if OldGui.Name == "MainGui" and OldGui ~= Gui then
