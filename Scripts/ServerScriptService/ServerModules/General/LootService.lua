@@ -29,7 +29,7 @@ local Utility = require(ReplicatedStorage.Source.SharedModules.General.Utility)
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local PICK_UP_RANGE = 7
-local DESPAWN_DROP_LOOT_TIME = 5
+local DESPAWN_DROP_LOOT_TIME = 15
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Remotes
@@ -194,7 +194,6 @@ local function AddStartCleanAttribute(Loot: Model)
                 Part.Transparency = if not Ghost then OriginalTransparency else OriginalTransparency + ((1 - OriginalTransparency) / 2)
             end
             task.wait(math.clamp(0.5 - ((x - 1) * 0.05), 0.1, 0.5))
-            warn(x)
         end
 
         if not AllLoot[Loot] then return end
@@ -316,7 +315,7 @@ function LootService.RequestPickupLoot(Player: Player, Loot: Model): boolean
     return true
 end
 
-function LootService.RequesteDropLoot(Player: Player)
+function LootService.RequestDropLoot(Player: Player)
     if not Player then return end
     
     local Alive, _, Root = Utility.Players.CheckAlive(Player)
@@ -343,7 +342,7 @@ function LootService.RequesteDropLoot(Player: Player)
     NewLoot:SetAttribute("LootType", LastLoot.Type)
     NewLoot.Parent = DroppedLootFolder
 
-    WaitToAnchor({NewLoot})
+    --WaitToAnchor({NewLoot})
 
     PLData.Value -= LootInfo[LastLoot.Name]
     Remotes.LootService.PlayerLootValueChanged:Fire(Player, PlayerLoot[Player].Value)
@@ -382,13 +381,16 @@ function LootService:Init()
         return LootService.RequestPickupLoot(Player, Loot)
     end)
 
-    Remotes:CreateToServer("RequesteDropLoot", {}, "Returns", function(Player: Player)
-        return LootService.RequesteDropLoot(Player)
+    Remotes:CreateToServer("RequestDropLoot", {}, "Returns", function(Player: Player)
+        return LootService.RequestDropLoot(Player)
     end)
 end
 
 function LootService:Deferred()
-    LootService.SpawnLoot(Workspace.TestMap.Pile)
+    for _, Pile in Workspace.TestMap:GetChildren() do
+        LootService.SpawnLoot(Pile)
+    end
+    --LootService.SpawnLoot(Workspace.TestMap.Pile)
 
     LootService.Run()
 end

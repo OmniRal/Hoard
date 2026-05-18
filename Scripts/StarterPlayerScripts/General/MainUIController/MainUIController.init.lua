@@ -58,6 +58,8 @@ local DraggingUI: {Base: GuiObject?, Element: GuiObject?, Dragging: boolean, Dra
 local Events = ReplicatedStorage.Events
 local Assets = ReplicatedStorage.Assets
 
+local CleanupComplete = false
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Private Functions
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -76,6 +78,8 @@ local function CreateNewGui()
                 end
             end
         end
+
+        CleanupComplete = true
     end)
 end
 
@@ -113,6 +117,7 @@ end
 function MainUIController:Init()
     CreateNewGui()
 
+
     UserInputService.InputChanged:Connect(function(Input: InputObject)
         if not DraggingUI.Dragging then return end
         if Input.UserInputType ~= Enum.UserInputType.MouseMovement and Input.UserInputType ~= Enum.UserInputType.Touch then return end
@@ -124,6 +129,9 @@ function MainUIController:Deferred()
     SetGui()
 
     task.delay(0.1, function()
+        while not CleanupComplete do 
+            task.wait() 
+        end
         LootUI.Init()
     end)
 

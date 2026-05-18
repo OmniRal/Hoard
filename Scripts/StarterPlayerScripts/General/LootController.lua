@@ -94,7 +94,7 @@ local function AttemptDropLoot(_, InputState: Enum.UserInputState, InputObject: 
     if os.clock() < LastLootDropAttempt + LOOT_DROP_COOLDOWN then return end
 
     LastLootDropAttempt = os.clock()
-    LootService:RequesteDropLoot()
+    LootService:RequestDropLoot()
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
